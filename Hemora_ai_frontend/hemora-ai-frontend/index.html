@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hemora AI — Creative Medical &amp; Swarm Intelligence Platform</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <!-- LOGIN GATE MODAL (Before Entering Command Center) -->
+  <div id="login-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-md p-4">
+    <div class="glass-panel relative w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-5">
+      <button id="login-close" class="absolute top-4 right-4 rounded-xl p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
+        <i data-lucide="x" class="h-4 w-4"></i>
+      </button>
+
+      <div class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 text-white shadow-lg shadow-rose-500/25">
+          <i data-lucide="shield-check" class="h-5 w-5"></i>
+        </div>
+        <div>
+          <h2 data-i18n="loginTitle" class="text-lg font-extrabold text-slate-900 dark:text-white">System Access</h2>
+          <p data-i18n="loginSub" class="text-xs text-slate-500 dark:text-slate-400">Sign in to enter Hemora AI Command Center</p>
+        </div>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="space-y-1.5">
+        <label data-i18n="roleLabel" class="text-xs font-semibold text-slate-600 dark:text-slate-300">Agent Role</label>
+        <div class="grid grid-cols-3 gap-2" id="role-selector">
+          <button type="button" data-role="Coordinator" class="role-btn rounded-xl py-2 text-xs font-bold bg-rose-600 text-white shadow-sm transition">Coordinator</button>
+          <button type="button" data-role="Hospital" class="role-btn rounded-xl py-2 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition">Hospital</button>
+          <button type="button" data-role="Blood Bank" class="role-btn rounded-xl py-2 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition">Blood Bank</button>
+        </div>
+      </div>
+
+      <form id="login-form" class="space-y-3.5">
+        <div>
+          <label data-i18n="emailLabel" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Email</label>
+          <input id="login-email" type="email" value="admin@hemora.ai" required class="w-full rounded-xl bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-rose-500 focus:outline-none" />
+        </div>
+        <div>
+          <label data-i18n="passLabel" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Password</label>
+          <input id="login-pass" type="password" value="••••••••" required class="w-full rounded-xl bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-rose-500 focus:outline-none" />
+        </div>
+        <p id="login-err" class="hidden text-xs text-rose-500 font-medium"></p>
+        <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 py-3 text-sm font-bold text-white shadow-lg shadow-rose-600/25 transition">
+          <span data-i18n="loginBtn">Sign In &amp; Enter</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- HOSPITAL BLOOD REQUEST MODAL -->
+  <div id="hosp-req-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-md p-4">
+    <div class="glass-panel relative w-full max-w-md rounded-3xl p-6 space-y-4">
+      <button id="hosp-req-close" class="absolute top-4 right-4 rounded-xl p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white"><i data-lucide="x" class="h-4 w-4"></i></button>
+      <h3 data-i18n="hospReqTitle" class="text-base font-extrabold text-slate-900 dark:text-white">Submit Hospital Blood Request</h3>
+      <form id="hosp-req-form" class="space-y-3 text-xs">
+        <div>
+          <label data-i18n="lblHosp" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Hospital</label>
+          <select id="req-hosp" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="h_kasr">Kasr Al Ainy Hospital</option>
+            <option value="h_57357">57357 Hospital</option>
+            <option value="h_fouad">Dar Al Fouad Hospital</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label data-i18n="lblType" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Blood Type</label>
+            <select id="req-type" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white mono">
+              <option>O-</option><option>O+</option><option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
+            </select>
+          </div>
+          <div>
+            <label data-i18n="lblUnits" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Units</label>
+            <input id="req-units" type="number" min="1" max="20" value="3" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white mono" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label data-i18n="lblComp" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Component</label>
+            <select id="req-comp" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+              <option>Whole Blood</option><option>Packed RBC</option><option>Platelets</option><option>Fresh Plasma</option>
+            </select>
+          </div>
+          <div>
+            <label data-i18n="lblUrgency" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Urgency</label>
+            <select id="req-urgency" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+              <option value="Critical">Critical</option><option value="High">High</option><option value="Normal">Normal</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="w-full rounded-2xl bg-sky-600 hover:bg-sky-500 py-2.5 text-xs font-bold text-white shadow-md transition">
+          <span data-i18n="btnSubmitReq">Find Optimal Bank &amp; Dispatch (PSO)</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BLOOD BANK ADD INVENTORY MODAL -->
+  <div id="bank-add-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-md p-4">
+    <div class="glass-panel relative w-full max-w-md rounded-3xl p-6 space-y-4">
+      <button id="bank-add-close" class="absolute top-4 right-4 rounded-xl p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white"><i data-lucide="x" class="h-4 w-4"></i></button>
+      <h3 data-i18n="bankAddTitle" class="text-base font-extrabold text-slate-900 dark:text-white">Add Blood Units to Inventory</h3>
+      <form id="bank-add-form" class="space-y-3 text-xs">
+        <div>
+          <label data-i18n="lblBank" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Blood Bank</label>
+          <select id="add-bank" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option>Maadi Bank</option><option>Abbassia Central</option><option>6th October Hub</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label data-i18n="lblType" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Type</label>
+            <select id="add-type" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white mono">
+              <option>O-</option><option>O+</option><option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
+            </select>
+          </div>
+          <div>
+            <label data-i18n="lblUnits" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Units</label>
+            <input id="add-units" type="number" min="1" max="50" value="10" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white mono" />
+          </div>
+          <div>
+            <label data-i18n="lblExp" class="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Exp (Days)</label>
+            <input id="add-exp" type="number" min="1" max="42" value="14" class="w-full rounded-xl bg-white dark:bg-slate-900 px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white mono" />
+          </div>
+        </div>
+        <button type="submit" class="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-500 py-2.5 text-xs font-bold text-white shadow-md transition">
+          <span data-i18n="btnSaveStock">Save to Blood Bank Stock</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Plus Jakarta Sans', 'Cairo', system-ui, sans-serif; }
+    html[dir="rtl"] body { font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Creative Aurora Mesh Background */
+    .aurora-bg {
+      background-image:
+        radial-gradient(at 12% 18%, rgba(244, 63, 94, 0.11) 0px, transparent 48%),
+        radial-gradient(at 88% 12%, rgba(14, 165, 233, 0.10) 0px, transparent 45%),
+        radial-gradient(at 55% 88%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+    }
+    .dark .aurora-bg {
+      background-image:
+        radial-gradient(at 12% 18%, rgba(244, 63, 94, 0.16) 0px, transparent 48%),
+        radial-gradient(at 88% 12%, rgba(6, 182, 212, 0.14) 0px, transparent 45%),
+        radial-gradient(at 55% 88%, rgba(16, 185, 129, 0.10) 0px, transparent 50%);
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: 0 12px 36px -8px rgba(15, 23, 42, 0.07);
+    }
+    .dark .glass-panel {
+      background: rgba(15, 23, 42, 0.74);
+      border: 1px solid rgba(51, 65, 85, 0.55);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Animated ECG & Liquid Wave */
+    @keyframes ecgDraw {
+      0% { stroke-dashoffset: 320; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .ecg-line {
+      stroke-dasharray: 320;
+      animation: ecgDraw 2.6s linear infinite;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .float-slow { animation: floatSlow 4s ease-in-out infinite; }
+    .float-delay { animation: floatSlow 4.5s ease-in-out 1.2s infinite; }
+
+    .leaflet-container { font-family: inherit !important; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070B14] dark:text-slate-100 aurora-bg transition-colors duration-300">
+
+  <!-- Floating Glass Navbar -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/70 dark:border-slate-800/70 bg-white/75 dark:bg-[#070B14]/80 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <div class="flex items-center gap-3">
+        <div class="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 text-white shadow-lg shadow-rose-500/30">
+          <i data-lucide="droplet" class="h-5 w-5"></i>
+          <span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-[#070B14]"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">Hemora</span>
+            <span class="rounded-md bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400 border border-rose-500/20">AI</span>
+          </div>
+          <p data-i18n="tagline" class="text-[11px] text-slate-500 dark:text-slate-400">Smart Blood Distribution · Swarm AI</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Pill -->
+      <nav class="flex items-center gap-1 rounded-2xl bg-slate-100/90 dark:bg-slate-900/90 p-1 border border-slate-200/80 dark:border-slate-800">
+        <button id="nav-landing" class="rounded-xl px-4 py-1.5 text-xs font-semibold transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm">
+          <span data-i18n="navOverview">Showcase</span>
+        </button>
+        <button id="nav-dashboard" class="rounded-xl px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <span data-i18n="navDashboard">Command Center</span>
+        </button>
+      </nav>
+
+      <!-- Language, Theme & Auth Controls -->
+      <div class="flex items-center gap-2">
+        <div id="user-badge" class="hidden items-center gap-1.5 rounded-xl bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+          <span id="user-role-label">Coordinator</span>
+          <button id="btn-logout" class="ml-1 text-rose-500 hover:text-rose-400" title="Sign Out"><i data-lucide="log-out" class="h-3.5 w-3.5"></i></button>
+        </div>
+        <button id="btn-lang" class="inline-flex items-center gap-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-rose-400 transition">
+          <i data-lucide="globe" class="h-3.5 w-3.5 text-rose-500"></i>
+          <span id="lang-label">العربية</span>
+        </button>
+        <button id="btn-theme" class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-amber-300 border border-slate-200 dark:border-slate-700 hover:border-rose-400 transition" title="Toggle Theme">
+          <i data-lucide="moon" id="theme-icon" class="h-4 w-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- VIEW 1: CREATIVE STORYTELLING SHOWCASE -->
+  <main id="view-landing" class="mx-auto max-w-7xl px-4 py-8 space-y-12">
+    <section class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
+      <!-- Left Editorial Copy -->
+      <div class="lg:col-span-6 space-y-6">
+        <div class="inline-flex items-center gap-2 rounded-full bg-white/90 dark:bg-slate-900/90 px-3.5 py-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 shadow-sm">
+          <span class="h-2 w-2 rounded-full bg-rose-500 animate-ping"></span>
+          <span data-i18n="heroBadge">Multi-Agent System · PSO Algorithm</span>
+        </div>
+
+        <h1 data-i18n="heroTitle" class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+          Every Drop Counts. <span class="bg-gradient-to-r from-rose-600 to-cyan-500 bg-clip-text text-transparent">Orchestrated by AI.</span>
+        </h1>
+
+        <p data-i18n="heroDesc" class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+          An autonomous network of Hospital, Blood Bank, and Transport Agents powered by Particle Swarm Optimization (PSO) to match critical blood requests in milliseconds—minimizing expiry waste and saving lives.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="cta-launch" class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-rose-600/25 transition transform hover:-translate-y-0.5">
+            <i data-lucide="sparkles" class="h-4 w-4"></i>
+            <span data-i18n="ctaLaunch">Enter Command Center</span>
+          </button>
+          <a href="#compatibility" class="inline-flex items-center gap-2 rounded-2xl glass-panel px-5 py-3.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:border-rose-400 transition">
+            <i data-lucide="heart-handshake" class="h-4 w-4 text-rose-500"></i>
+            <span data-i18n="ctaCompat">Compatibility Matrix</span>
+          </a>
+        </div>
+
+        <!-- Mini Proof Strip -->
+        <div class="grid grid-cols-3 gap-3 pt-2">
+          <div class="glass-panel rounded-2xl p-3.5 text-center">
+            <div class="text-xl font-extrabold text-slate-900 dark:text-white mono">96.4%</div>
+            <div data-i18n="statFulfill" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Fulfillment</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-3.5 text-center">
+            <div class="text-xl font-extrabold text-rose-600 dark:text-rose-400 mono">-79%</div>
+            <div data-i18n="statWaste" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Expiry Waste</div>
+          </div>
+          <div class="glass-panel rounded-2xl p-3.5 text-center">
+            <div class="text-xl font-extrabold text-cyan-600 dark:text-cyan-400 mono">14.2m</div>
+            <div data-i18n="statTime" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Avg. Delivery</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Creative Interactive 3D-Style Blood Unit Inspector -->
+      <div class="lg:col-span-6">
+        <div class="glass-panel relative rounded-[2rem] p-6 overflow-hidden">
+          <!-- Floating Agent Badges -->
+          <div class="float-slow absolute top-5 right-5 z-10 rounded-2xl bg-white/95 dark:bg-slate-900/95 px-3 py-2 text-xs shadow-lg border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="font-semibold text-slate-800 dark:text-slate-100">PSO Match: 0.98</span>
+          </div>
+          <div class="float-delay absolute top-5 left-5 z-10 rounded-2xl bg-white/95 dark:bg-slate-900/95 px-3 py-2 text-xs shadow-lg border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+            <i data-lucide="thermometer" class="h-3.5 w-3.5 text-cyan-500"></i>
+            <span class="font-semibold mono text-slate-800 dark:text-slate-100">4.0°C Cold-Chain</span>
+          </div>
+
+          <div class="flex flex-col items-center justify-center py-4">
+            <!-- Interactive Stylized Medical Blood Bag SVG -->
+            <svg viewBox="0 0 220 240" class="h-72 w-64 drop-shadow-2xl">
+              <defs>
+                <linearGradient id="bagGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f43f5e" />
+                  <stop offset="100%" stop-color="#be123c" />
+                </linearGradient>
+              </defs>
+              <!-- Top Hang Loop & Tube -->
+              <rect x="96" y="8" width="28" height="14" rx="5" fill="none" stroke="#94a3b8" stroke-width="3" />
+              <path d="M110 22 V42" stroke="#94a3b8" stroke-width="4" />
+              <!-- Outer Bag -->
+              <rect x="42" y="42" width="136" height="164" rx="26" fill="rgba(255,255,255,0.12)" stroke="#cbd5e1" stroke-width="3" />
+              <!-- Liquid Fill -->
+              <rect id="hero-bag-liquid" x="48" y="84" width="124" height="116" rx="20" fill="url(#bagGrad)" opacity="0.92" />
+              <!-- Medical Label Card inside Bag -->
+              <rect x="54" y="96" width="112" height="72" rx="12" fill="rgba(255,255,255,0.94)" />
+              <text id="hero-bag-type" x="110" y="132" text-anchor="middle" fill="#e11d48" font-size="28" font-weight="800" font-family="JetBrains Mono, monospace">O-</text>
+              <text id="hero-bag-comp" x="110" y="152" text-anchor="middle" fill="#334155" font-size="8.5" font-weight="700">WHOLE BLOOD · 450ml</text>
+              <!-- Animated ECG Pulse -->
+              <polyline points="20,224 65,224 78,210 90,234 104,198 118,232 130,220 144,224 200,224" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="ecg-line" />
+            </svg>
+
+            <!-- Interactive Blood Type Selector Pills -->
+            <div class="mt-3 text-center space-y-2 w-full">
+              <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-400" data-i18n="selectType">Click a Blood Type to Inspect Live Allocation</div>
+              <div class="flex flex-wrap justify-center gap-1.5" id="hero-type-pills"></div>
+              <div id="hero-bag-meta" class="text-xs font-medium text-slate-600 dark:text-slate-300 pt-1">
+                Universal Donor · Priority: FEFO (3 days left) · 24 units ready
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Blood Compatibility Matrix (Creative Domain Touch) -->
+    <section id="compatibility" class="glass-panel rounded-3xl p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 data-i18n="compatTitle" class="text-lg font-bold text-slate-900 dark:text-white">Interactive Cross-Match Compatibility</h2>
+          <p data-i18n="compatSub" class="text-xs text-slate-500 dark:text-slate-400">Select a recipient blood type to highlight compatible donor units used by the PSO solver.</p>
+        </div>
+        <span id="compat-badge" class="rounded-full bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-600 dark:text-rose-400 mono">Recipient: O-</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 text-[11px] font-medium text-slate-600 dark:text-slate-300">
+        <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-rose-600"></span><span data-i18n="legRec">Selected Recipient</span></span>
+        <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-emerald-500/30 border border-emerald-500"></span><span data-i18n="legMatch">Compatible Donor (PSO Valid)</span></span>
+        <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-slate-200 dark:bg-slate-700"></span><span data-i18n="legNo">Incompatible</span></span>
+      </div>
+      <div class="grid grid-cols-4 sm:grid-cols-8 gap-2" id="compat-grid"></div>
+      <p id="compat-explain" class="text-xs font-medium text-slate-600 dark:text-slate-300 pt-1"></p>
+    </section>
+  </main>
+
+  <!-- VIEW 2: CREATIVE COMMAND CENTER DASHBOARD -->
+  <main id="view-dashboard" class="hidden mx-auto max-w-7xl px-4 py-6 space-y-5">
+    <!-- Top Control Strip -->
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <button data-dtab="map" class="dtab-btn rounded-xl px-4 py-2 text-xs font-semibold bg-rose-600 text-white shadow-md shadow-rose-600/20 transition">
+          <span data-i18n="tabMap">Live Cairo Map</span>
+        </button>
+        <button data-dtab="units" class="dtab-btn rounded-xl px-4 py-2 text-xs font-medium glass-panel text-slate-700 dark:text-slate-200 transition">
+          <span data-i18n="tabUnits">Blood Units (FEFO)</span>
+        </button>
+        <button data-dtab="compare" class="dtab-btn rounded-xl px-4 py-2 text-xs font-medium glass-panel text-slate-700 dark:text-slate-200 transition">
+          <span data-i18n="tabCompare">PSO vs. Traditional</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 glass-panel rounded-xl p-1">
+        <button id="eng-pso" class="rounded-lg px-3 py-1 text-xs font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 transition">PSO + MAS</button>
+        <button id="eng-trad" class="rounded-lg px-3 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 transition">Traditional</button>
+      </div>
+    </div>
+
+    <!-- Role-Aware Action Bar (Hospital Request / Blood Bank Stock) -->
+    <section id="role-action-bar" class="glass-panel rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+        <span id="role-welcome-text" class="text-xs font-semibold text-slate-700 dark:text-slate-200">Signed in as Coordinator — Full Network Control</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="open-hosp-req-btn" class="inline-flex items-center gap-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition">
+          <i data-lucide="plus-circle" class="h-3.5 w-3.5"></i>
+          <span data-i18n="btnHospReq">New Hospital Request</span>
+        </button>
+        <button id="open-bank-add-btn" class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition">
+          <i data-lucide="package-plus" class="h-3.5 w-3.5"></i>
+          <span data-i18n="btnBankAdd">Add Blood Units</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div class="glass-panel rounded-2xl p-4">
+        <div data-i18n="statFulfill" class="text-xs text-slate-500 dark:text-slate-400">Fulfillment</div>
+        <div id="d-fulfill" class="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white mono">96.4%</div>
+      </div>
+      <div class="glass-panel rounded-2xl p-4">
+        <div data-i18n="statTime" class="text-xs text-slate-500 dark:text-slate-400">Avg. Delivery</div>
+        <div id="d-time" class="mt-1 text-2xl font-extrabold text-cyan-600 dark:text-cyan-400 mono">14.2m</div>
+      </div>
+      <div class="glass-panel rounded-2xl p-4">
+        <div data-i18n="statWaste" class="text-xs text-slate-500 dark:text-slate-400">Expiry Waste</div>
+        <div id="d-waste" class="mt-1 text-2xl font-extrabold text-rose-600 dark:text-rose-400 mono">3.1%</div>
+      </div>
+      <div class="glass-panel rounded-2xl p-4">
+        <div data-i18n="statActive" class="text-xs text-slate-500 dark:text-slate-400">Active Transfers</div>
+        <div id="d-active" class="mt-1 text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mono">3</div>
+      </div>
+    </section>
+
+    <!-- SUB-TAB 1: MAP + LIVE FEED -->
+    <section id="dpanel-map" class="dpanel grid grid-cols-1 gap-5 lg:grid-cols-12">
+      <div class="glass-panel rounded-3xl p-4 lg:col-span-8">
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h3 data-i18n="mapTitle" class="text-sm font-bold text-slate-900 dark:text-white">Greater Cairo Distribution Network</h3>
+          <div class="flex items-center gap-2">
+            <button id="btn-sim-toggle" class="rounded-xl bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 transition">Pause</button>
+            <button id="btn-emergency" class="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-rose-600/25 transition">
+              <i data-lucide="siren" class="h-3.5 w-3.5"></i>
+              <span data-i18n="btnEmergency">Trigger Emergency</span>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
+          <div id="map" style="height: 410px; width: 100%;"></div>
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-3xl p-4 lg:col-span-4 flex flex-col h-[485px]">
+        <h3 data-i18n="feedTitle" class="text-sm font-bold text-slate-900 dark:text-white mb-3">Live Agent Dispatches</h3>
+        <div id="dispatch-list" class="space-y-2.5 overflow-y-auto flex-1 pr-1"></div>
+      </div>
+    </section>
+
+    <!-- SUB-TAB 2: BLOOD UNITS -->
+    <section id="dpanel-units" class="dpanel hidden">
+      <div id="units-grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
+    </section>
+
+    <!-- SUB-TAB 3: ANALYTICS -->
+    <section id="dpanel-compare" class="dpanel hidden grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div class="glass-panel rounded-3xl p-5">
+        <h3 data-i18n="chart1Title" class="text-sm font-bold text-slate-900 dark:text-white mb-3">PSO + MAS vs. Traditional</h3>
+        <div class="relative h-72"><canvas id="chartComp"></canvas></div>
+      </div>
+      <div class="glass-panel rounded-3xl p-5">
+        <h3 data-i18n="chart2Title" class="text-sm font-bold text-slate-900 dark:text-white mb-3">PSO Swarm Convergence</h3>
+        <div class="relative h-72"><canvas id="chartConv"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    const i18n = {
+      en: {
+        tagline: 'Smart Blood Distribution · Swarm AI',
+        navOverview: 'Showcase',
+        navDashboard: 'Command Center',
+        heroBadge: 'Multi-Agent System · PSO Algorithm',
+        heroTitle: 'Every Drop Counts. <span class="bg-gradient-to-r from-rose-600 to-cyan-500 bg-clip-text text-transparent">Orchestrated by AI.</span>',
+        heroDesc: 'An autonomous network of Hospital, Blood Bank, and Transport Agents powered by Particle Swarm Optimization (PSO) to match critical blood requests in milliseconds—minimizing expiry waste and saving lives.',
+        ctaLaunch: 'Enter Command Center',
+        ctaCompat: 'Compatibility Matrix',
+        statFulfill: 'Fulfillment',
+        statWaste: 'Expiry Waste',
+        statTime: 'Avg. Delivery',
+        statActive: 'Active Transfers',
+        selectType: 'Click a Blood Type to Inspect Live Allocation',
+        compatTitle: 'Interactive Cross-Match Compatibility',
+        compatSub: 'Select a recipient blood type to highlight compatible donor units used by the PSO solver.',
+        tabMap: 'Live Cairo Map',
+        tabUnits: 'Blood Units (FEFO)',
+        tabCompare: 'PSO vs. Traditional',
+        mapTitle: 'Greater Cairo Distribution Network',
+        btnEmergency: 'Trigger Emergency',
+        feedTitle: 'Live Agent Dispatches',
+        chart1Title: 'PSO + MAS vs. Traditional',
+        chart2Title: 'PSO Swarm Convergence',
+        loginTitle: 'System Access',
+        loginSub: 'Sign in to enter Hemora AI Command Center',
+        roleLabel: 'Agent Role',
+        emailLabel: 'Email',
+        passLabel: 'Password',
+        loginBtn: 'Sign In & Enter',
+        legRec: 'Selected Recipient',
+        legMatch: 'Compatible Donor (PSO Valid)',
+        legNo: 'Incompatible',
+        btnHospReq: 'New Hospital Request',
+        btnBankAdd: 'Add Blood Units',
+        hospReqTitle: 'Submit Hospital Blood Request',
+        lblHosp: 'Hospital',
+        lblType: 'Blood Type',
+        lblUnits: 'Units',
+        lblComp: 'Component',
+        lblUrgency: 'Urgency',
+        btnSubmitReq: 'Find Optimal Bank & Dispatch (PSO)',
+        bankAddTitle: 'Add Blood Units to Inventory',
+        lblBank: 'Blood Bank',
+        lblExp: 'Exp (Days)',
+        btnSaveStock: 'Save to Blood Bank Stock'
+      },
+      ar: {
+        tagline: 'التوزيع الذكي لوحدات الدم · ذكاء الأسراب',
+        navOverview: 'العرض التفاعلي',
+        navDashboard: 'مركز القيادة',
+        heroBadge: 'نظام الوكلاء المتعددين · خوارزمية PSO',
+        heroTitle: 'كل قطرة دم تُحدث فرقاً. <span class="bg-gradient-to-r from-rose-600 to-cyan-500 bg-clip-text text-transparent">بتوزيع ذكي لحظي.</span>',
+        heroDesc: 'شبكة ذكية من وكلاء المستشفيات وبنوك الدم والنقل تعمل بخوارزمية PSO لتلبية طلبات الدم الحرجة في أسرع وقت، مع تقليل الهدر الناتج عن انتهاء الصلاحية.',
+        ctaLaunch: 'افتح مركز القيادة',
+        ctaCompat: 'مصفوفة التوافق',
+        statFulfill: 'نسبة التلبية',
+        statWaste: 'هدر الصلاحية',
+        statTime: 'متوسط التوصيل',
+        statActive: 'شحنات نشطة',
+        selectType: 'اضغط على أي فصيلة لمعاينة حالتها الحية',
+        compatTitle: 'مصفوفة التوافق التفاعلية للفصائل',
+        compatSub: 'اختر فصيلة المريض لعرض الفصائل المتوافقة التي يعتمدها نظام الـ PSO.',
+        tabMap: 'خريطة القاهرة الحية',
+        tabUnits: 'وحدات الدم (FEFO)',
+        tabCompare: 'PSO مقابل التقليدي',
+        mapTitle: 'شبكة التوزيع — القاهرة الكبرى',
+        btnEmergency: 'طلب طوارئ جديد',
+        feedTitle: 'الشحنات الحية للوكلاء',
+        chart1Title: 'مقارنة PSO + MAS بالتقليدي',
+        chart2Title: 'تقارب تكلفة خوارزمية PSO',
+        loginTitle: 'تسجيل الدخول للنظام',
+        loginSub: 'سجل دخولك للوصول إلى مركز قيادة Hemora AI',
+        roleLabel: 'صلاحية الحساب',
+        emailLabel: 'البريد الإلكتروني',
+        passLabel: 'كلمة المرور',
+        loginBtn: 'دخول للنظام',
+        legRec: 'فصيلة المريض المختارة',
+        legMatch: 'متبرع متوافق (يقبله الـ PSO)',
+        legNo: 'غير متوافق',
+        btnHospReq: 'طلب دم جديد (مستشفى)',
+        btnBankAdd: 'إضافة وحدات دم (بنك)',
+        hospReqTitle: 'تقديم طلب وحدات دم لمستشفى',
+        lblHosp: 'المستشفى',
+        lblType: 'الفصيلة',
+        lblUnits: 'الكمية',
+        lblComp: 'المكون',
+        lblUrgency: 'درجة الاستعجال',
+        btnSubmitReq: 'اختيار أفضل بنك وإرسال بالـ PSO',
+        bankAddTitle: 'إضافة وحدات دم للمخزون',
+        lblBank: 'بنك الدم',
+        lblExp: 'الصلاحية (أيام)',
+        btnSaveStock: 'حفظ في مخزون البنك'
+      }
+    };
+
+    const compatibility = {
+      'O-': ['O-'],
+      'O+': ['O-', 'O+'],
+      'A-': ['O-', 'A-'],
+      'A+': ['O-', 'O+', 'A-', 'A+'],
+      'B-': ['O-', 'B-'],
+      'B+': ['O-', 'O+', 'B-', 'B+'],
+      'AB-': ['O-', 'A-', 'B-', 'AB-'],
+      'AB+': ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+']
+    };
+
+    const state = {
+      lang: 'en',
+      dark: false,
+      isAuthenticated: false,
+      userRole: 'Coordinator',
+      engine: 'pso',
+      running: true,
+      selectedHeroType: 'O-',
+      selectedRecipient: 'O-',
+      locations: [
+        { id: 'bb_maadi', type: 'bank', name: 'Maadi Blood Bank', lat: 29.9675, lng: 31.2358 },
+        { id: 'bb_abbassia', type: 'bank', name: 'Abbassia Central Bank', lat: 30.0650, lng: 31.2717 },
+        { id: 'bb_october', type: 'bank', name: '6th October Hub', lat: 29.9833, lng: 30.9667 },
+        { id: 'h_kasr', type: 'hospital', name: 'Kasr Al Ainy Hospital', lat: 30.0303, lng: 31.2294 },
+        { id: 'h_57357', type: 'hospital', name: '57357 Hospital', lat: 30.0227, lng: 31.2379 },
+        { id: 'h_fouad', type: 'hospital', name: 'Dar Al Fouad Hospital', lat: 29.9977, lng: 30.9683 }
+      ],
+      dispatches: [
+        { id: 'TR-101', from: 'bb_abbassia', to: 'h_kasr', bloodType: 'O-', units: 4, progress: 0.35, eta: '11m', optimal: true },
+        { id: 'TR-102', from: 'bb_maadi', to: 'h_57357', bloodType: 'A+', units: 3, progress: 0.65, eta: '6m', optimal: true },
+        { id: 'TR-103', from: 'bb_october', to: 'h_fouad', bloodType: 'B-', units: 2, progress: 0.25, eta: '5m', optimal: true }
+      ],
+      inventory: [
+        { type: 'O-', comp: 'WHOLE BLOOD · 450ml', units: 24, cap: 80, exp: 3, bank: 'Maadi Bank', status: 'critical', note: 'Universal Donor' },
+        { type: 'O+', comp: 'PACKED RBC · 300ml', units: 78, cap: 120, exp: 14, bank: 'Abbassia Central', status: 'healthy', note: 'High Reserve' },
+        { type: 'A+', comp: 'PLATELETS · 250ml', units: 32, cap: 70, exp: 2, bank: 'Abbassia Central', status: 'expiring', note: 'FEFO Priority' },
+        { type: 'A-', comp: 'FRESH PLASMA · 200ml', units: 19, cap: 60, exp: 4, bank: '6th October Hub', status: 'expiring', note: 'FEFO Priority' },
+        { type: 'B+', comp: 'WHOLE BLOOD · 450ml', units: 58, cap: 90, exp: 16, bank: 'Maadi Bank', status: 'healthy', note: 'Optimal Stock' },
+        { type: 'B-', comp: 'PACKED RBC · 300ml', units: 14, cap: 50, exp: 2, bank: '6th October Hub', status: 'critical', note: 'Low Stock Alert' },
+        { type: 'AB+', comp: 'FRESH PLASMA · 200ml', units: 44, cap: 70, exp: 19, bank: 'Abbassia Central', status: 'healthy', note: 'Universal Plasma' },
+        { type: 'AB-', comp: 'PLATELETS · 250ml', units: 11, cap: 40, exp: 3, bank: 'Maadi Bank', status: 'critical', note: 'Rare Type' }
+      ]
+    };
+
+    // --- Hero Blood Bag Interactivity ---
+    function renderHeroPills() {
+      const container = document.getElementById('hero-type-pills');
+      container.innerHTML = state.inventory.map(item => {
+        const active = state.selectedHeroType === item.type;
+        return `<button data-htype="${item.type}" class="rounded-xl px-2.5 py-1 text-xs font-bold mono transition ${active ? 'bg-rose-600 text-white shadow-md shadow-rose-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-rose-50 dark:hover:bg-slate-700'}">${item.type}</button>`;
+      }).join('');
+
+      container.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedHeroType = btn.dataset.htype;
+          const item = state.inventory.find(i => i.type === state.selectedHeroType);
+          document.getElementById('hero-bag-type').textContent = item.type;
+          document.getElementById('hero-bag-comp').textContent = item.comp;
+          const fillH = Math.max(36, Math.round((item.units / item.cap) * 124));
+          const liq = document.getElementById('hero-bag-liquid');
+          liq.setAttribute('y', String(200 - fillH));
+          liq.setAttribute('height', String(fillH));
+          document.getElementById('hero-bag-meta').textContent = `${item.note} · FEFO (${item.exp}d left) · ${item.units} units in ${item.bank}`;
+      
+          renderHeroPills();
+        });
+      });
+    }
+
+    // --- Compatibility Matrix ---
+    function renderCompat() {
+      const grid = document.getElementById('compat-grid');
+      const allowed = compatibility[state.selectedRecipient] || [];
+      document.getElementById('compat-badge').textContent = state.lang === 'ar'
+        ? `المريض: ${state.selectedRecipient} (${allowed.length} متوافق)`
+        : `Recipient: ${state.selectedRecipient} (${allowed.length} matches)`;
+      document.getElementById('compat-explain').textContent = state.lang === 'ar'
+        ? `المريض ذو فصيلة ${state.selectedRecipient} يمكنه استقبال الدم بأمان من: ${allowed.join(' ، ')}`
+        : `${state.selectedRecipient} recipient can safely receive donor units from: ${allowed.join(', ')}`;
+      grid.innerHTML = Object.keys(compatibility).map(bt => {
+        const isRec = bt === state.selectedRecipient;
+        const isMatch = allowed.includes(bt);
+        const cls = isRec
+          ? 'bg-rose-600 text-white ring-2 ring-rose-400 shadow-lg'
+          : isMatch
+            ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40'
+            : 'bg-slate-100 dark:bg-slate-800/60 text-slate-400 opacity-55';
+        return `<button data-cbt="${bt}" class="rounded-2xl py-3 text-sm font-extrabold mono transition ${cls}">${bt}</button>`;
+      }).join('');
+
+      grid.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedRecipient = btn.dataset.cbt;
+          renderCompat();
+      updateRoleBanner();
+        });
+      });
+    }
+
+    // --- Language & Theme ---
+    document.getElementById('btn-lang').addEventListener('click', () => {
+      state.lang = state.lang === 'en' ? 'ar' : 'en';
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('lang-label').textContent = state.lang === 'en' ? 'العربية' : 'English';
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.dataset.i18n;
+        if (i18n[state.lang][k]) { if (k === 'heroTitle') el.innerHTML = i18n[state.lang][k]; else el.textContent = i18n[state.lang][k]; }
+      });
+      renderCompat();
+    });
+
+    let map = null, tileLayer = null, routeLayer = null;
+    const lightTile = 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    const darkTile = 'https://server.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+
+    document.getElementById('btn-theme').addEventListener('click', () => {
+      state.dark = !state.dark;
+      document.documentElement.classList.toggle('dark', state.dark);
+      document.getElementById('theme-icon').setAttribute('data-lucide', state.dark ? 'sun' : 'moon');
+      lucide.createIcons();
+      if (tileLayer) tileLayer.setUrl(state.dark ? darkTile : lightTile);
+    });
+
+    // --- View Switcher ---
+    function showView(view) {
+      const isDash = view === 'dashboard';
+      if (isDash && !state.isAuthenticated) {
+        const m = document.getElementById('login-modal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        return;
+      }
+      document.getElementById('view-landing').classList.toggle('hidden', isDash);
+      document.getElementById('view-dashboard').classList.toggle('hidden', !isDash);
+      document.getElementById('nav-landing').className = !isDash
+        ? 'rounded-xl px-4 py-1.5 text-xs font-semibold transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+        : 'rounded-xl px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 transition-all';
+      document.getElementById('nav-dashboard').className = isDash
+        ? 'rounded-xl px-4 py-1.5 text-xs font-semibold transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+        : 'rounded-xl px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 transition-all';
+      if (isDash) { initMapOnce(); setTimeout(() => map && map.invalidateSize(), 150); }
+    }
+    document.getElementById('nav-landing').addEventListener('click', () => showView('landing'));
+    document.getElementById('nav-dashboard').addEventListener('click', () => showView('dashboard'));
+    document.getElementById('cta-launch').addEventListener('click', () => showView('dashboard'));
+
+    // --- Dashboard Tabs & Engine ---
+    document.querySelectorAll('.dtab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.dtab;
+        document.querySelectorAll('.dtab-btn').forEach(b => {
+          b.className = 'dtab-btn rounded-xl px-4 py-2 text-xs font-medium glass-panel text-slate-700 dark:text-slate-200 transition';
+        });
+        btn.className = 'dtab-btn rounded-xl px-4 py-2 text-xs font-semibold bg-rose-600 text-white shadow-md shadow-rose-600/20 transition';
+        document.querySelectorAll('.dpanel').forEach(p => p.classList.add('hidden'));
+        document.getElementById(`dpanel-${target}`).classList.remove('hidden');
+        if (target === 'map' && map) setTimeout(() => map.invalidateSize(), 120);
+      });
+    });
+
+    document.getElementById('eng-pso').addEventListener('click', () => {
+      state.engine = 'pso';
+      document.getElementById('d-fulfill').textContent = '96.4%';
+      document.getElementById('d-time').textContent = '14.2m';
+      document.getElementById('d-waste').textContent = '3.1%';
+      document.getElementById('eng-pso').className = 'rounded-lg px-3 py-1 text-xs font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 transition';
+      document.getElementById('eng-trad').className = 'rounded-lg px-3 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 transition';
+    });
+    document.getElementById('eng-trad').addEventListener('click', () => {
+      state.engine = 'trad';
+      document.getElementById('d-fulfill').textContent = '78.2%';
+      document.getElementById('d-time').textContent = '24.1m';
+      document.getElementById('d-waste').textContent = '15.5%';
+      document.getElementById('eng-trad').className = 'rounded-lg px-3 py-1 text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-300 transition';
+      document.getElementById('eng-pso').className = 'rounded-lg px-3 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 transition';
+    });
+
+    function initMapOnce() {
+      if (map) return;
+      map = L.map('map').setView([30.025, 31.16], 11);
+      tileLayer = L.tileLayer(state.dark ? darkTile : lightTile, { maxZoom: 18 }).addTo(map);
+      routeLayer = L.layerGroup().addTo(map);
+      state.locations.forEach(loc => {
+        const isBank = loc.type === 'bank';
+        L.circleMarker([loc.lat, loc.lng], {
+          radius: isBank ? 9 : 8, fillColor: isBank ? '#e11d48' : '#0284c7',
+          color: '#ffffff', weight: 2, fillOpacity: 0.95
+        }).bindPopup(`<b>${loc.name}</b>`).addTo(map);
+      });
+      setInterval(() => {
+        if (!state.running) return;
+        state.dispatches.forEach(d => {
+          d.progress += 0.015 * (state.engine === 'pso' ? 1.2 : 0.75);
+          if (d.progress >= 1) d.progress = 0.04;
+        });
+        drawRoutes();
+        renderDispatches();
+      }, 140);
+      drawRoutes();
+    }
+
+    function drawRoutes() {
+      if (!routeLayer) return;
+      routeLayer.clearLayers();
+      state.dispatches.forEach(d => {
+        const from = state.locations.find(l => l.id === d.from);
+        const to = state.locations.find(l => l.id === d.to);
+        const color = d.optimal ? '#10b981' : '#f59e0b';
+        L.polyline([[from.lat, from.lng], [to.lat, to.lng]], { color, weight: 3, opacity: 0.8 }).addTo(routeLayer);
+        const lat = from.lat + (to.lat - from.lat) * d.progress;
+        const lng = from.lng + (to.lng - from.lng) * d.progress;
+        L.circleMarker([lat, lng], { radius: 6, fillColor: color, color: '#ffffff', weight: 2, fillOpacity: 1 }).addTo(routeLayer);
+      });
+    }
+
+    document.getElementById('btn-sim-toggle').addEventListener('click', (e) => {
+      state.running = !state.running;
+      e.target.textContent = state.running ? 'Pause' : 'Resume';
+    });
+
+    document.getElementById('btn-emergency').addEventListener('click', () => {
+      const banks = state.locations.filter(l => l.type === 'bank');
+      const hosps = state.locations.filter(l => l.type === 'hospital');
+      const b = banks[Math.floor(Math.random() * banks.length)];
+      const h = hosps[Math.floor(Math.random() * hosps.length)];
+      const bt = ['O-', 'A+', 'B-', 'AB-'][Math.floor(Math.random() * 4)];
+      state.dispatches.unshift({
+        id: `TR-${Math.floor(200 + Math.random() * 700)}`,
+        from: b.id, to: h.id, bloodType: bt, units: Math.floor(Math.random() * 4) + 2,
+        progress: 0.05, eta: state.engine === 'pso' ? '9m' : '18m', optimal: state.engine === 'pso'
+      });
+      if (state.dispatches.length > 5) state.dispatches.pop();
+      document.getElementById('d-active').textContent = state.dispatches.length;
+      renderDispatches();
+      drawRoutes();
+    });
+
+    function renderDispatches() {
+      document.getElementById('dispatch-list').innerHTML = state.dispatches.map(d => {
+        const from = state.locations.find(l => l.id === d.from);
+        const to = state.locations.find(l => l.id === d.to);
+        const pct = Math.round(d.progress * 100);
+        return `
+          <div class="rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 p-3 border border-slate-200/70 dark:border-slate-800 text-xs">
+            <div class="flex items-center justify-between font-bold mb-1">
+              <span class="text-rose-600 dark:text-rose-400 mono">${d.bloodType} · ${d.units} Units</span>
+              <span class="mono ${d.optimal ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}">ETA ${d.eta}</span>
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mb-2">${from.name} → ${to.name}</div>
+            <div class="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div class="h-full rounded-full ${d.optimal ? 'bg-emerald-500' : 'bg-amber-500'}" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderUnits() {
+      document.getElementById('units-grid').innerHTML = state.inventory.map(u => {
+        const pct = Math.round((u.units / u.cap) * 100);
+        const barColor = u.status === 'critical' ? 'bg-rose-500' : u.exp < 5 ? 'bg-amber-500' : 'bg-emerald-500';
+        return `
+          <div class="glass-panel rounded-3xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-lg font-extrabold text-rose-600 dark:text-rose-400 mono">${u.type}</span>
+              <span class="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300">${u.note}</span>
+            </div>
+            <div class="text-sm font-bold text-slate-900 dark:text-white">${u.units} / ${u.cap} Units</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mb-3">${u.bank} · Exp: ${u.exp}d</div>
+            <div class="h-2 w-full rounded-full bg-slate-200/70 dark:bg-slate-800 overflow-hidden">
+              <div class="h-full rounded-full ${barColor}" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function initCharts() {
+      new Chart(document.getElementById('chartComp'), {
+        type: 'bar',
+        data: {
+          labels: ['Delivery (min)', 'Waste (%)', 'Cost ($)', 'Unfulfilled (%)'],
+          datasets: [
+            { label: 'PSO + MAS', data: [14.2, 3.1, 42, 3.6], backgroundColor: '#0284c7', borderRadius: 6 },
+            { label: 'Traditional', data: [24.1, 15.5, 68, 21.8], backgroundColor: '#e11d48', borderRadius: 6 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+      new Chart(document.getElementById('chartConv'), {
+        type: 'line',
+        data: {
+          labels: ['Iter 1', 'Iter 10', 'Iter 20', 'Iter 30', 'Iter 40', 'Iter 50'],
+          datasets: [{ label: 'Best Cost', data: [100, 66, 41, 27, 20, 17.8], borderColor: '#10b981', fill: true, backgroundColor: 'rgba(16,185,129,0.12)', tension: 0.35 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+
+    // =========================================================================
+    // BACKEND INTEGRATION LAYER (Ready for Python/FastAPI/Node.js Team)
+    // Replace mock promises below with fetch(`${API_CONFIG.BASE_URL}...`)
+    // =========================================================================
+    const API_CONFIG = {
+      BASE_URL: '/api/v1',
+      ENDPOINTS: {
+        LOGIN: '/auth/login',
+        SUBMIT_REQUEST: '/requests/dispatch',
+        UPDATE_INVENTORY: '/inventory/add'
+      }
+    };
+
+    const API_SERVICE = {
+      async submitBloodRequest(payload) {
+        // Backend team: POST to API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.SUBMIT_REQUEST
+        const banks = state.locations.filter(l => l.type === 'bank');
+        const chosenBank = banks[Math.floor(Math.random() * banks.length)];
+        return {
+          id: `TR-${Math.floor(300 + Math.random() * 699)}`,
+          from: chosenBank.id,
+          to: payload.hospitalId,
+          bloodType: payload.bloodType,
+          units: payload.units,
+          progress: 0.05,
+          eta: state.engine === 'pso' ? '8m' : '18m',
+          optimal: state.engine === 'pso'
+        };
+      },
+      async addBloodStock(payload) {
+        // Backend team: POST to API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.UPDATE_INVENTORY
+        const existing = state.inventory.find(i => i.type === payload.bloodType);
+        if (existing) {
+          existing.units = Math.min(existing.cap, existing.units + payload.units);
+          existing.exp = payload.expDays;
+          existing.bank = payload.bank;
+          existing.status = existing.units < 25 ? 'critical' : existing.exp < 5 ? 'expiring' : 'healthy';
+        }
+        return existing;
+      }
+    };
+
+    function updateRoleBanner() {
+      const el = document.getElementById('role-welcome-text');
+      const hospBtn = document.getElementById('open-hosp-req-btn');
+      const bankBtn = document.getElementById('open-bank-add-btn');
+      if (state.userRole === 'Hospital') {
+        el.textContent = state.lang === 'ar' ? 'الحساب: وكيل مستشفى — يمكنك إرسال طلبات الدم ومتابعة التوصيل' : 'Signed in as Hospital Agent — Submit blood requests & track deliveries';
+        hospBtn.classList.remove('hidden');
+        bankBtn.classList.add('hidden');
+      } else if (state.userRole === 'Blood Bank') {
+        el.textContent = state.lang === 'ar' ? 'الحساب: مدير بنك دم — يمكنك تحديث المخزون ومراقبة الصلاحية' : 'Signed in as Blood Bank Admin — Manage stock & FEFO expiry';
+        hospBtn.classList.add('hidden');
+        bankBtn.classList.remove('hidden');
+      } else {
+        el.textContent = state.lang === 'ar' ? 'الحساب: المنسق الرئيسي — تحكم كامل في الشبكة' : 'Signed in as Coordinator — Full Network Control';
+        hospBtn.classList.remove('hidden');
+        bankBtn.classList.remove('hidden');
+      }
+    }
+
+    // Modal Open/Close Handlers
+    document.getElementById('open-hosp-req-btn').addEventListener('click', () => {
+      const m = document.getElementById('hosp-req-modal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    });
+    document.getElementById('hosp-req-close').addEventListener('click', () => {
+      const m = document.getElementById('hosp-req-modal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    });
+    document.getElementById('open-bank-add-btn').addEventListener('click', () => {
+      const m = document.getElementById('bank-add-modal');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    });
+    document.getElementById('bank-add-close').addEventListener('click', () => {
+      const m = document.getElementById('bank-add-modal');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    });
+
+    document.getElementById('hosp-req-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const dispatch = await API_SERVICE.submitBloodRequest({
+        hospitalId: document.getElementById('req-hosp').value,
+        bloodType: document.getElementById('req-type').value,
+        units: parseInt(document.getElementById('req-units').value, 10) || 1,
+        component: document.getElementById('req-comp').value,
+        urgency: document.getElementById('req-urgency').value
+      });
+      state.dispatches.unshift(dispatch);
+      if (state.dispatches.length > 5) state.dispatches.pop();
+      document.getElementById('d-active').textContent = state.dispatches.length;
+      renderDispatches();
+      drawRoutes();
+      document.getElementById('hosp-req-modal').classList.add('hidden');
+      document.getElementById('hosp-req-modal').classList.remove('flex');
+    });
+
+    document.getElementById('bank-add-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await API_SERVICE.addBloodStock({
+        bank: document.getElementById('add-bank').value,
+        bloodType: document.getElementById('add-type').value,
+        units: parseInt(document.getElementById('add-units').value, 10) || 5,
+        expDays: parseInt(document.getElementById('add-exp').value, 10) || 14
+      });
+      renderUnits();
+      document.getElementById('bank-add-modal').classList.add('hidden');
+      document.getElementById('bank-add-modal').classList.remove('flex');
+    });
+
+    // --- Login Gate Logic ---
+    document.querySelectorAll('.role-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.userRole = btn.dataset.role;
+        document.querySelectorAll('.role-btn').forEach(b => {
+          b.className = 'role-btn rounded-xl py-2 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition';
+        });
+        btn.className = 'role-btn rounded-xl py-2 text-xs font-bold bg-rose-600 text-white shadow-sm transition';
+        const emailMap = { 'Coordinator': 'admin@hemora.ai', 'Hospital': 'hospital@hemora.ai', 'Blood Bank': 'bank@hemora.ai' };
+        document.getElementById('login-email').value = emailMap[state.userRole] || 'admin@hemora.ai';
+      });
+    });
+
+    document.getElementById('login-close').addEventListener('click', () => {
+      const m = document.getElementById('login-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    });
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      const err = document.getElementById('login-err');
+      if (!email || !pass) {
+        err.textContent = state.lang === 'ar' ? 'يرجى إدخال البريد وكلمة المرور' : 'Please enter email and password';
+        err.classList.remove('hidden');
+        return;
+      }
+      err.classList.add('hidden');
+      state.isAuthenticated = true;
+      document.getElementById('login-modal').classList.add('hidden');
+      document.getElementById('login-modal').classList.remove('flex');
+      document.getElementById('user-role-label').textContent = state.userRole;
+      document.getElementById('user-badge').classList.remove('hidden');
+      document.getElementById('user-badge').classList.add('inline-flex');
+      updateRoleBanner();
+      showView('dashboard');
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      state.isAuthenticated = false;
+      document.getElementById('user-badge').classList.add('hidden');
+      document.getElementById('user-badge').classList.remove('inline-flex');
+      showView('landing');
+    });
+
+
+    renderHeroPills();
+    renderCompat();
+    renderDispatches();
+    renderUnits();
+    initCharts();
+  </script>
+</body>
+</html>
