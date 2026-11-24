@@ -1,22 +1,93 @@
-# Hemora AI — Frontend Package
+# 🩸 Hemora AI | Smart Blood Distribution Platform
 
-Complete frontend interface for **Hemora AI** (Multi-Agent System + PSO Blood Distribution).
+### Interactive Front-End & Healthcare Management Dashboard
 
-## Features Included
-- **Bilingual Support:** English (LTR) & Arabic (RTL) toggle.
-- **Theme Support:** Clean Medical Light Mode & Deep Navy Dark Mode.
-- **Interactive Showcase:** Animated blood bag inspector (FEFO priority) & Cross-Match Compatibility Matrix.
-- **Role-Based Login Gate:** `Coordinator`, `Hospital`, and `Blood Bank` roles.
-- **Command Center Dashboard:**
-  - Live Greater Cairo Map (Leaflet) with animated PSO vs. Traditional routes.
-  - Hospital Blood Request form & Blood Bank Add-Units form.
-  - Blood Inventory & Expiry (FEFO) monitor.
-  - PSO vs. Traditional comparison & convergence charts (Chart.js).
+Hemora AI is an academic smart blood distribution project designed to support coordination between hospitals, blood banks, and transportation agents.
 
-## Backend Integration Guide
-Open `index.html` and search for `API_CONFIG` and `API_SERVICE`:
-- `POST /api/v1/auth/login` — User & role authentication.
-- `POST /api/v1/requests/dispatch` — Submit hospital blood request and receive PSO-selected blood bank + route.
-- `POST /api/v1/inventory/add` — Add/update blood bank units and expiry dates.
+The proposed system combines Multi-Agent Systems (MAS) and Particle Swarm Optimization (PSO) to optimize blood allocation, reduce delivery delays, and minimize blood wastage.
 
-Replace the mock promises inside `API_SERVICE` with `fetch()` calls to your backend server.
+This repository showcases the **interactive front-end prototype** of the larger project.
+
+## 👩‍💻 My Contribution
+
+**Sandy Mohamed — Front-End Developer**
+
+I developed the front-end interface included in this repository, focusing on user experience, dashboard design, interactive visualizations, and simulation workflows.
+
+My work includes:
+
+- Interactive healthcare dashboard
+- Hospital and blood bank interfaces
+- Coordinator command center
+- Interactive geographical maps
+- Blood inventory visualization
+- Hospital blood request interfaces
+- Blood bank inventory management forms
+- PSO comparison visualizations
+- Bilingual Arabic and English interface
+- Light and dark themes
+- Front-end integration points for backend services
+
+## 🌐 Live Demo
+
+[Explore Hemora AI](https://sandy-mohamed.github.io/Hemora-AI-Frontend/)
+
+## ✨ Features
+
+### 🏥 Multi-Role Interfaces
+- Coordinator dashboard
+- Hospital interface
+- Blood Bank interface
+- Demonstration role-selection login
+
+### 🗺️ Interactive Maps
+- Greater Cairo map powered by Leaflet
+- Visualized blood transportation routes
+- Simulated PSO versus traditional routing
+
+### 📊 Data Visualization
+- Blood inventory indicators
+- Expiration monitoring using FEFO concepts
+- Distribution comparison charts
+- Optimization convergence visualization
+
+### 🩸 Blood Management
+- Blood request forms
+- Blood unit inventory interface
+- Blood group compatibility visualization
+- Animated blood bag inspector
+
+### 🎨 User Experience
+- Responsive dashboard layout
+- Arabic RTL and English LTR support
+- Light and dark mode
+- Interactive controls and notifications
+
+## 🛠️ Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript
+- Tailwind CSS
+- Leaflet.js
+- Chart.js
+- Lucide Icons
+
+## 🔗 Backend Integration
+
+The front-end includes integration points for:
+
+- User authentication
+- Hospital blood requests
+- Blood bank inventory updates
+- Optimized blood allocation results
+
+Backend services and the PSO optimization engine are separate components of the larger project.
+
+## ⚠️ Prototype Scope
+
+This repository contains a front-end demonstration.
+
+Inventory figures, routes, dispatches, and optimization comparisons are simulated. Authentication is for demonstration only.
+
+The prototype is not connected
