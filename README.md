@@ -32,6 +32,26 @@ My work includes:
 
 [Explore Hemora AI](https://sandy-mohamed.github.io/Hemora-AI-Frontend/)
 
+## 📸 Screenshots
+
+### Showcase Hero
+![Hemora AI showcase hero](screenshots/01-showcase-hero.jpg)
+
+### Interactive Compatibility Matrix
+![Interactive cross-match compatibility matrix](screenshots/02-compatibility-matrix.jpg)
+
+### Greater Cairo Distribution Map
+![Greater Cairo distribution network map](screenshots/03-cairo-map.jpg)
+
+### Coordinator Command Center
+![Coordinator command center with live agent dispatches](screenshots/04-command-center.jpg)
+
+### Add Blood Units
+![Add blood units to inventory](screenshots/05-add-blood-units.jpg)
+
+### Hospital Blood Request
+![Submit hospital blood request](screenshots/06-hospital-request.jpg)
+
 ## ✨ Features
 
 ### 🏥 Multi-Role Interfaces
